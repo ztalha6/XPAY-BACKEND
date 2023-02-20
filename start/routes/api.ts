@@ -14,7 +14,6 @@ Route.group(() => {
   Route.post('register-end-user', 'Api/UserController.registerEndUserOrVendor')
   /*Login*/
   Route.post('login', 'Api/UserController.login')
-  Route.post('online-login', 'Api/UserController.onlineLogin')
   /*Forgot Password*/
   Route.post('forgot-password', 'Api/UserController.forgotPassword')
   /*Resend OTP*/
@@ -28,6 +27,10 @@ Route.group(() => {
   Route.post('unique-validation', 'Api/UserController.uniqueValidation')
 
   Route.post('social-login', 'Api/UserController.socialLogin')
+
+  /*API-Payment*/
+  Route.resource('initiate-payment','Api/PaymentController.initiatePayment')
+  Route.resource('confirm-payment','Api/PaymentController.confirmPayment')
 
 
   /****************************
@@ -61,8 +64,6 @@ Route.group(() => {
       Route.post('mark-all-read', 'Api/NotificationController.markAllRead')
       /* unread count */
       Route.get('get-unread-count', 'Api/NotificationController.unreadCount')
-      /*Get All Restaurant users except admin and mobile users*/
-      Route.get('get-restaurant-users','Api/UserController.getRestaurantUsers')
 
 
       /*Logout*/
@@ -80,14 +81,14 @@ Route.group(() => {
 
 
       Route.group(()=>{
-        /*API-Transaction*/
-        Route.resource('transactions','Api/TransactionController')
+        /*API-Payment*/
+        Route.resource('payments','Api/PaymentController')
       }).middleware([`permissions:${Module.ITEMS.PAYMENT}`])
 
 
 
 
-    }).middleware(`roles:${Role.TYPES.ESTABLISHMENT_LEVEL},${Role.TYPES.RESTAURANT_ADMIN},${Role.TYPES.ADMIN},${Role.TYPES.USER}`)
+    }).middleware(`roles:${Role.TYPES.ADMIN},${Role.TYPES.USER}`)
 
 
 
@@ -97,12 +98,7 @@ Route.group(() => {
     * Routes only accessible to Super Admin
     * */
     Route.group(() => {
-      /*API-Plan*/
-      Route.resource('plans','Api/PlanController')
-      /*API-Restaurant*/
-      Route.resource('restaurants','Api/RestaurantController')
-      /*Register Restaurant Admin*/
-      Route.post('register-restaurant-admin', 'Api/UserController.registerRestaurantAdmin')
+
     }).middleware(`roles:${Role.TYPES.ADMIN}`)
 
 

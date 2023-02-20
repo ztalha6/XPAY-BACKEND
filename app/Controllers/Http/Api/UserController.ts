@@ -20,6 +20,7 @@ import Role from 'App/Models/Role'
 import EditUserValidator from 'App/Validators/EditUserValidator'
 import Attachment from 'App/Models/Attachment'
 import RegisterUserOrVendorValidator from 'App/Validators/RegisterUserOrVendorValidator'
+import * as crypto from 'crypto'
 
 export default class UserController extends ApiBaseController {
 
@@ -132,12 +133,14 @@ export default class UserController extends ApiBaseController {
     await user.related('roles').sync([roleId], false);
 
     if(roleId == Role.TYPES.VENDOR){
+      const apiKey = crypto.randomBytes(16).toString('hex');
       const userBusinessDetail = {
         business_name: ctx.request.input('business_name'),
         business_address: ctx.request.input('business_address'),
         bank_account_number: ctx.request.input('bank_account_number'),
         bank_routing_number: ctx.request.input('bank_routing_number'),
         tax_id_number: ctx.request.input('tax_id_number'),
+        api_key: apiKey
       }
       await user.related('userBusinessDetail').create(userBusinessDetail)
     }

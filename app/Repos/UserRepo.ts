@@ -15,7 +15,7 @@ class UserRepo extends BaseRepo {
   model
 
   constructor() {
-    const relations = ['roles']
+    const relations = ['roles','userBusinessDetail']
     const scopes = []
     super(User, relations, scopes)
     this.model = User

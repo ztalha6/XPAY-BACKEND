@@ -1,23 +1,23 @@
 import {column} from '@ioc:Adonis/Lucid/Orm'
 import CommonModel from 'App/Models/CommonModel'
 
-export default class UserBusinessDetail extends CommonModel {
+export default class Payment extends CommonModel {
   @column({isPrimary:true})
   public id: number
   @column()
-  public businessName: string
+  public paymentIntentId: string
   @column()
-  public businessAddress: string
+  public paymentMethodId: string
   @column()
-  public bankAccountNumber: string
+  public amount: number
   @column()
-  public bankRoutingNumber: string
+  public status: string
   @column()
-  public taxIdNumber: string
-  @column()
-  public apiKey: string
+  public lastPaymentError: string
   @column()
   public userId: number
+  @column()
+  public vendorId: number
 
 
   /*
