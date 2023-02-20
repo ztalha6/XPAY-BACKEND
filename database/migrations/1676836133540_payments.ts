@@ -10,7 +10,7 @@ export default class extends BaseSchema {
       table.string('payment_method_id').notNullable();
       table.float('amount').notNullable();
       table.string('status').notNullable();
-      table.string('last_payment_error').notNullable();
+      table.string('last_payment_error')
       table.integer('user_id').unsigned().notNullable().unique()
       table
         .foreign('user_id')

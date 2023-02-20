@@ -32,13 +32,22 @@ class PaymentRepo extends BaseRepo {
       throw new ExceptionWithCode('Invalid vendor',400)
     }
 
-    const userPhone = ctx.request.input('user-phone')
+    const userPhone = ctx.request.input('user_phone')
 
     const user = await User.query().whereHas('roles', (rolesQuery) => {
       rolesQuery.where('id', Role.TYPES.USER)
     }).where('phone',userPhone).first()
 
     if(!user) throw new ExceptionWithCode('User not found',400)
+    // const paymentMethod = await stripe.paymentMethods.create({
+    //   type: 'card',
+    //   card: {
+    //     number: '4242424242424242',
+    //     exp_month: 8,
+    //     exp_year: 2023,
+    //     cvc: '314',
+    //   },
+    // });
 
     const paymentIntent = await stripe.paymentIntents.create({
       amount: input.amount,
@@ -61,7 +70,7 @@ class PaymentRepo extends BaseRepo {
       throw new ExceptionWithCode('Invalid vendor',400)
     }
 
-    const userId = ctx.request.input('user-id')
+    const userId = ctx.request.input('user_id')
 
     const user = await User.query().whereHas('roles', (rolesQuery) => {
       rolesQuery.where('id', Role.TYPES.USER)
@@ -70,7 +79,7 @@ class PaymentRepo extends BaseRepo {
     if(!user) throw new ExceptionWithCode('User not found',400)
 
     // Use the Stripe API to confirm the payment
-    const paymentIntent = await stripe.paymentIntents.confirm(input.payment_method_id, {
+    const paymentIntent = await stripe.paymentIntents.confirm(input.payment_intent_id, {
       payment_method: input.payment_method_id
     });
     if (paymentIntent.status !== 'succeeded') {
