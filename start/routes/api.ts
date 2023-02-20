@@ -29,8 +29,8 @@ Route.group(() => {
   Route.post('social-login', 'Api/UserController.socialLogin')
 
   /*API-Payment*/
-  Route.resource('initiate-payment','Api/PaymentController.initiatePayment')
-  Route.resource('confirm-payment','Api/PaymentController.confirmPayment')
+  Route.post('initiate-payment','Api/PaymentController.initiatePayment')
+  Route.post('confirm-payment','Api/PaymentController.confirmPayment')
 
 
   /****************************
