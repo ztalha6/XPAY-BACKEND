@@ -136,3 +136,8 @@ Route.resource('gateway-transactions','Api/GatewayTransactionController')
 
 /*API-UserBusinessDetail*/
 Route.resource('user-business-details','Api/UserBusinessDetailController')
+
+/*API-GuestUser*/
+Route.resource('guest-users','Api/GuestUserController')
+/*API-PaymentOrderItem*/
+Route.resource('payment-order-items','Api/PaymentOrderItemController')

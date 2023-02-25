@@ -1,5 +1,6 @@
-import {column} from '@ioc:Adonis/Lucid/Orm'
+import {column, HasMany, hasMany} from '@ioc:Adonis/Lucid/Orm'
 import CommonModel from 'App/Models/CommonModel'
+import PaymentOrderItem from 'App/Models/PaymentOrderItem'
 
 export default class Payment extends CommonModel {
   @column({isPrimary:true})
@@ -11,9 +12,9 @@ export default class Payment extends CommonModel {
   @column()
   public amount: number
   @column()
-  public status: string
+  public guestUserId: number
   @column()
-  public lastPaymentError: string
+  public status: string
   @column()
   public userId: number
   @column()
@@ -23,7 +24,8 @@ export default class Payment extends CommonModel {
   /*
   * ######################### RELATIONS ##########################
   * */
-
+  @hasMany(() => PaymentOrderItem)
+  public payment_order_items: HasMany<typeof PaymentOrderItem>
 
 
 

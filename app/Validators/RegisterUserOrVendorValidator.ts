@@ -44,6 +44,9 @@ export default class RegisterUserOrVendorValidator extends BaseValidator {
     tax_id_number: schema.string.optional([
       rules.requiredWhen('role_id', '=', Role.TYPES.VENDOR)
     ]),
+    website_url: schema.string.optional([
+      rules.requiredWhen('role_id', '=', Role.TYPES.VENDOR)
+    ]),
   })
 
   constructor(protected ctx: HttpContextContract) {

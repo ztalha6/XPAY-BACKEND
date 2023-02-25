@@ -1,25 +1,13 @@
 import {column} from '@ioc:Adonis/Lucid/Orm'
 import CommonModel from 'App/Models/CommonModel'
 
-export default class UserBusinessDetail extends CommonModel {
+export default class GuestUser extends CommonModel {
   @column({isPrimary:true})
   public id: number
   @column()
-  public businessName: string
+  public verificationCode: string
   @column()
-  public businessAddress: string
-  @column()
-  public bankAccountNumber: string
-  @column()
-  public bankRoutingNumber: string
-  @column()
-  public websiteUrl: string
-  @column()
-  public taxIdNumber: string
-  @column()
-  public apiKey: string
-  @column()
-  public userId: number
+  public phone: string
 
 
   /*

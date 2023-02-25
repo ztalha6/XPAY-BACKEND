@@ -4,21 +4,21 @@ import {RequestContract} from '@ioc:Adonis/Core/Request'
 import UserBusinessDetail from 'App/Models/UserBusinessDetail'
 import ExceptionWithCode from 'App/Exceptions/ExceptionWithCode'
 import Env from '@ioc:Adonis/Core/Env'
-import User from 'App/Models/User'
 import {HttpContext} from '@adonisjs/core/build/standalone'
-import Role from 'App/Models/Role'
+import GuestUser from 'App/Models/GuestUser'
+import Database from '@ioc:Adonis/Lucid/Database'
 
 const stripe = require('stripe')(Env.get('STRIPE_SECRET'))
 
 class PaymentRepo extends BaseRepo {
   model
 
-    constructor() {
-        const relations = []
-      const scopes = []
-      super(Payment, relations, scopes)
-        this.model = Payment
-    }
+  constructor() {
+    const relations = []
+    const scopes = []
+    super(Payment, relations, scopes)
+    this.model = Payment
+  }
 
   async initiatePayment(input, request? : RequestContract, _instanceType?: number, _deleteOldMedia = false, _trx?: any) {
     const vendorApiKey = request?.header('x-api-key')
@@ -34,11 +34,12 @@ class PaymentRepo extends BaseRepo {
 
     const userPhone = ctx.request.input('user_phone')
 
-    const user = await User.query().whereHas('roles', (rolesQuery) => {
-      rolesQuery.where('id', Role.TYPES.USER)
-    }).where('phone',userPhone).first()
+    let guestUser = await GuestUser.updateOrCreate({
+      phone: userPhone
+    }, {
+      phone: userPhone
+    })
 
-    if(!user) throw new ExceptionWithCode('User not found',400)
     // const paymentMethod = await stripe.paymentMethods.create({
     //   type: 'card',
     //   card: {
@@ -55,48 +56,48 @@ class PaymentRepo extends BaseRepo {
       payment_method: input.payment_method_id, // add payment method here
     })
 
-    return {payment_intent_id : paymentIntent.id,client_secret: paymentIntent.client_secret,user_id: user.id}
+    return {payment_intent_id : paymentIntent.id,client_secret: paymentIntent.client_secret,guest_user_id: guestUser.id}
   }
 
-  async confirmPayment(input, request? : RequestContract, _instanceType?: number, _deleteOldMedia = false, trx?: any) {
-    const vendorApiKey = request?.header('x-api-key')
-    const ctx: any = HttpContext.get()
+  async confirmPayment(input, request? : RequestContract, _instanceType?: number, _deleteOldMedia = false, _trx?: any) {
+    const payment: Payment = await Database.transaction(async (trx) => {
+      const vendorApiKey = request?.header('x-api-key')
+      const ctx: any = HttpContext.get()
 
-    if(!vendorApiKey) throw new ExceptionWithCode('Invalid vendor',400)
+      if(!vendorApiKey) throw new ExceptionWithCode('Invalid vendor',400)
 
-    // Verify the vendor API key
-    const vendor = await UserBusinessDetail.query().where('api_key', vendorApiKey).first()
-    if (!vendor) {
-      throw new ExceptionWithCode('Invalid vendor',400)
-    }
+      // Verify the vendor API key
+      const vendor = await UserBusinessDetail.query().where('api_key', vendorApiKey).first()
+      if (!vendor) {
+        throw new ExceptionWithCode('Invalid vendor',400)
+      }
 
-    const userId = ctx.request.input('user_id')
+      const guestUserId = ctx.request.input('guest_user_id')
+      const paymentOrderItems = ctx.request.input('payment_order_items', [])
 
-    const user = await User.query().whereHas('roles', (rolesQuery) => {
-      rolesQuery.where('id', Role.TYPES.USER)
-    }).where('id',userId).first()
 
-    if(!user) throw new ExceptionWithCode('User not found',400)
+      // Use the Stripe API to confirm the payment
+      const paymentIntent = await stripe.paymentIntents.confirm(input.payment_intent_id, {
+        payment_method: input.payment_method_id
+      });
+      if (paymentIntent.status !== 'succeeded') {
+        throw new ExceptionWithCode('Payment failed',400)
+      }
 
-    // Use the Stripe API to confirm the payment
-    const paymentIntent = await stripe.paymentIntents.confirm(input.payment_intent_id, {
-      payment_method: input.payment_method_id
-    });
-    if (paymentIntent.status !== 'succeeded') {
-      throw new ExceptionWithCode('Payment failed',400)
-    }
+      let row = await this.model.create({
+        vendor_id: vendor.id,
+        guest_user_id: guestUserId,
+        payment_method_id: paymentIntent.payment_method,
+        payment_intent_id: paymentIntent.id,
+        status : paymentIntent.status,
+        amount : paymentIntent.amount / 100,
+      }, {client: trx})
+      await row.related('payment_order_items').createMany([...paymentOrderItems])
 
-    let row = await this.model.create({
-      vendor_id: vendor.id,
-      user_id: user.id,
-      payment_method_id: paymentIntent.payment_method,
-      payment_intent_id: paymentIntent.id,
-      status : paymentIntent.status,
-      amount : paymentIntent.amount / 100,
-      last_payment_error: paymentIntent.last_payment_error
-    }, {client: trx})
+      return row
+    })
 
-    return {payment_status: row.status}
+    return {payment_status: payment.status}
   }
 }
 

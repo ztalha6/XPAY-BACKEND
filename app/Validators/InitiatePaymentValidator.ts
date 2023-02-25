@@ -13,7 +13,6 @@ export default class InitiatePaymentValidator extends BaseValidator {
       rules.mobile({
         strict: true
       }),
-      rules.exists({table: 'users', column: 'phone', where: {'is_verified': 1,'deleted_at': null}}),
       rules.trim()
     ]),
   })
