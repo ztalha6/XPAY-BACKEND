@@ -14,10 +14,21 @@ class PaymentRepo extends BaseRepo {
   model
 
   constructor() {
-    const relations = []
+    const relations = ['payment_order_items']
     const scopes = []
     super(Payment, relations, scopes)
     this.model = Payment
+  }
+
+  async getPaymentByUser(id) {
+    const ctx: any = HttpContext.get()
+    const relations = ctx.request.input('relations',[])
+
+    let query = this.model.query()
+    for (let relation of [...this.relations, ...relations]) query.preload(relation)
+    for (let scope of this.scopes) query.withScopes((scopeBuilder) => scopeBuilder[scope].call())
+    const res = await query.select('id','amount','status').where({id}).firstOrFail()
+    return res
   }
 
   async initiatePayment(input, request? : RequestContract, _instanceType?: number, _deleteOldMedia = false, _trx?: any) {

@@ -12,6 +12,11 @@ export default class PaymentController extends ApiBaseController {
     super(PaymentRepo)
   }
 
+  async getPaymentByUser(ctx: HttpContextContract) {
+    const res = await PaymentRepo.getPaymentByUser(ctx.request.param('id'))
+    return this.apiResponse('Record fetched successfully!', res)
+  }
+
   async store(ctx: HttpContextContract, instanceType?: number) {
     await super.validateBody(ctx,InitiatePaymentValidator)
     let input = ctx.request.only(this.repo.fillables())

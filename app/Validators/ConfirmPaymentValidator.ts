@@ -16,7 +16,7 @@ export default class ConfirmPaymentValidator extends BaseValidator {
       }),
       rules.unsigned(),
     ]),
-    payment_order_items: schema.array().members(
+    payment_order_items: schema.array([rules.minLength(1)]).members(
       schema.object().members({
         name: schema.string([rules.maxLength(50),rules.trim()]),
         price: schema.number([rules.unsigned()]),

@@ -32,6 +32,12 @@ Route.group(() => {
   Route.post('initiate-payment','Api/PaymentController.initiatePayment')
   Route.post('confirm-payment','Api/PaymentController.confirmPayment')
 
+  /*API-UserBusinessDetail*/
+  Route.resource('user-business-details','Api/UserBusinessDetailController')
+
+  /*API-Payment*/
+  Route.get('get-payment-by-user/:id','Api/PaymentController.getPaymentByUser')
+
 
   /****************************
    * Authenticated Routes
@@ -131,11 +137,6 @@ Route.resource('days','Api/DayController')
 /*API-GatewayTransaction*/
 Route.resource('gateway-transactions','Api/GatewayTransactionController')
 
-
-
-
-/*API-UserBusinessDetail*/
-Route.resource('user-business-details','Api/UserBusinessDetailController')
 
 /*API-GuestUser*/
 Route.resource('guest-users','Api/GuestUserController')

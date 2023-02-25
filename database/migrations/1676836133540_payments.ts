@@ -11,7 +11,7 @@ export default class extends BaseSchema {
       table.float('amount').notNullable();
       table.string('status').notNullable();
       table.integer('guest_user_id').notNullable()
-      table.integer('vendor_id').unsigned().notNullable().unique()
+      table.integer('vendor_id').unsigned().notNullable()
       table
         .foreign('vendor_id')
         .references('users.id')

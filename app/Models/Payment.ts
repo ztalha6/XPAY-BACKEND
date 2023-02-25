@@ -16,8 +16,6 @@ export default class Payment extends CommonModel {
   @column()
   public status: string
   @column()
-  public userId: number
-  @column()
   public vendorId: number
 
 
@@ -26,6 +24,12 @@ export default class Payment extends CommonModel {
   * */
   @hasMany(() => PaymentOrderItem)
   public payment_order_items: HasMany<typeof PaymentOrderItem>
+
+  // @belongsTo(() => GuestUser, {
+  //   localKey: 'id',
+  //   foreignKey: 'guestUserId'
+  // })
+  // public guest_user: BelongsTo<typeof GuestUser>
 
 
 
