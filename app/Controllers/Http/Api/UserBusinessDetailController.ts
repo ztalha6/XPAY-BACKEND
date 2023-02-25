@@ -11,6 +11,7 @@ export default class UserBusinessDetailController extends ApiBaseController {
         super(UserBusinessDetailRepo)
     }
 
+
     async store(ctx: HttpContextContract, instanceType?: number) {
         await super.validateBody(ctx,UserBusinessDetailValidator)
         let input = ctx.request.only(this.repo.fillables())
