@@ -44,6 +44,9 @@ Route.group(() => {
   /*Sent Guest Verification Code*/
   Route.post('verify-guest-user','Api/GuestUserController.verifyGuestUser')
 
+  /*API- Open Dispute*/
+  Route.post('open-dispute','Api/DisputeController.store')
+
 
   /****************************
    * Authenticated Routes
@@ -89,6 +92,9 @@ Route.group(() => {
       Route.resource('payments','Api/PaymentController').only(['index','show'])
       // }).middleware([`permissions:${Module.ITEMS.PAYMENT}`])
 
+      /*API-Dispute*/
+      Route.resource('disputes','Api/DisputeController').except(['store'])
+
 
 
 
@@ -132,8 +138,6 @@ Route.group(() => {
 Route.resource('days','Api/DayController')
 
 
-/*API-GatewayTransaction*/
-Route.resource('gateway-transactions','Api/GatewayTransactionController')
 
 
 /*API-GuestUser*/

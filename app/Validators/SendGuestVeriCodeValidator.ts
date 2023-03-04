@@ -15,6 +15,7 @@ export default class SendGuestVerificationCodeValidator extends BaseValidator {
           deleted_at: null
         }
       }),
+      rules.unsigned()
     ])
   })
 }

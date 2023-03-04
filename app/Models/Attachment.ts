@@ -8,23 +8,18 @@ export default class Attachment extends CommonModel {
     POST: 10,
     USER: 20,
     PROFILE_PICTURE: 21,
-    CATEGORY: 30,
-    PRODUCT: 40,
-    RESTAURANT_CONTRACT_DOCUMENT: 50,
-    RESTAURANT_TAX_CERTIFICATE: 51,
-    RESTAURANT_TRADING_LICENCE: 52,
-    PRODUCT_IMAGES: 60
+    DISPUTE: 30
+  }
+
+  static MIME_TYPE = {
+    IMAGE: 'image',
+    VIDEO: 'video'
   }
 
   static TYPE_TEXT = {
     [Attachment.TYPE.POST]: 'post',
     [Attachment.TYPE.USER]: 'user',
-    [Attachment.TYPE.PROFILE_PICTURE]: 'profile-picture',
-    [Attachment.TYPE.CATEGORY]: 'category',
-    [Attachment.TYPE.PRODUCT]: 'product',
-    [Attachment.TYPE.RESTAURANT_TRADING_LICENCE]: 'Restaurant Trading Licence',
-    [Attachment.TYPE.RESTAURANT_TAX_CERTIFICATE]: 'Restaurant Tax Certificate',
-    [Attachment.TYPE.RESTAURANT_CONTRACT_DOCUMENT]: 'Restaurant Contract Document',
+    [Attachment.TYPE.PROFILE_PICTURE]: 'profile-picture'
   }
 
   @column({isPrimary: true})

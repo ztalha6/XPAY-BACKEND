@@ -1,7 +1,7 @@
 import {rules, schema} from '@ioc:Adonis/Core/Validator'
 import {HttpContextContract} from '@ioc:Adonis/Core/HttpContext'
 import BaseValidator from 'App/Validators/BaseValidator'
-import User from "App/Models/User";
+import User from 'App/Models/User'
 
 export default class RestaurantAdminValidator extends BaseValidator {
   constructor(protected ctx: HttpContextContract) {
@@ -27,7 +27,7 @@ export default class RestaurantAdminValidator extends BaseValidator {
     ]),
     full_name: schema.string([rules.trim()]),
     image: schema.string.optional([rules.trim()]),
-    device_type: schema.enum([User.DEVICE_TYPES.MOBILE, User.DEVICE_TYPES.WEB,User.DEVICE_TYPES.POS] as const),
+    device_type: schema.enum([User.DEVICE_TYPES.MOBILE, User.DEVICE_TYPES.WEB] as const),
     device_token: schema.string([rules.trim()])
   })
 
