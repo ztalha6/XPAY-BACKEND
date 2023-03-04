@@ -9,9 +9,7 @@ export default class UserValidator extends BaseValidator {
     super()
   }
 
-  public refs = schema.refs({
-    establishmentId: this.ctx.auth.use('api').user?.establishmentId || this.ctx.request.input('establishment_id',null),
-  })
+
 
   public schema = schema.create({
     email: schema.string({trim: true}, [
@@ -42,7 +40,6 @@ export default class UserValidator extends BaseValidator {
         table: 'establishments',
         column: 'id',
         where: {
-          id : this.refs.establishmentId.value,
           deleted_at: null
         },
       }),
@@ -52,7 +49,6 @@ export default class UserValidator extends BaseValidator {
         table: 'roles',
         column: 'id',
         where: {
-          establishment_id : this.refs.establishmentId.value,
           deleted_at: null
         },
         whereNot: {

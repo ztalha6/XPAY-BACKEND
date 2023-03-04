@@ -38,6 +38,12 @@ Route.group(() => {
   /*API-Payment*/
   Route.get('get-payment-by-user/:id','Api/PaymentController.getPaymentByUser')
 
+  /*Sent Guest Verification Code*/
+  Route.post('send-guest-verification-code','Api/GuestUserController.sendVerificationCode')
+
+  /*Sent Guest Verification Code*/
+  Route.post('verify-guest-user','Api/GuestUserController.verifyGuestUser')
+
 
   /****************************
    * Authenticated Routes
@@ -59,17 +65,9 @@ Route.group(() => {
         Route.post('register', 'Api/UserController.registerUser')
         /*Change Password*/
         Route.post('change-password', 'Api/UserController.changePassword')
-        /*API-Notification*/
-        Route.resource('notifications', 'Api/NotificationController').only(['index', 'show'])
 
       }).middleware(`permissions:${Module.ITEMS.USER_MANAGEMENT}`)
 
-      /* mark read */
-      Route.post('mark-read/:id', 'Api/NotificationController.markRead')
-      /* mark all read */
-      Route.post('mark-all-read', 'Api/NotificationController.markAllRead')
-      /* unread count */
-      Route.get('get-unread-count', 'Api/NotificationController.unreadCount')
 
 
       /*Logout*/
@@ -86,15 +84,15 @@ Route.group(() => {
       }).middleware(`permissions:${Module.ITEMS.ROLE_MANAGEMENT}`)
 
 
-      Route.group(()=>{
-        /*API-Payment*/
-        Route.resource('payments','Api/PaymentController')
-      }).middleware([`permissions:${Module.ITEMS.PAYMENT}`])
+      // Route.group(()=>{
+      /*API-Payment*/
+      Route.resource('payments','Api/PaymentController').only(['index','show'])
+      // }).middleware([`permissions:${Module.ITEMS.PAYMENT}`])
 
 
 
 
-    }).middleware(`roles:${Role.TYPES.ADMIN},${Role.TYPES.USER}`)
+    }).middleware(`roles:${Role.TYPES.ADMIN},${Role.TYPES.VENDOR}`)
 
 
 

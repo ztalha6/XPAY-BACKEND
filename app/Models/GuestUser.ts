@@ -5,7 +5,7 @@ export default class GuestUser extends CommonModel {
   @column({isPrimary:true})
   public id: number
   @column()
-  public verificationCode: string
+  public verificationCode: string | null
   @column()
   public phone: string
 

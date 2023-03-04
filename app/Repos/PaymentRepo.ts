@@ -7,6 +7,7 @@ import Env from '@ioc:Adonis/Core/Env'
 import {HttpContext} from '@adonisjs/core/build/standalone'
 import GuestUser from 'App/Models/GuestUser'
 import Database from '@ioc:Adonis/Lucid/Database'
+import constants from 'Config/constants'
 
 const stripe = require('stripe')(Env.get('STRIPE_SECRET'))
 
@@ -14,10 +15,31 @@ class PaymentRepo extends BaseRepo {
   model
 
   constructor() {
-    const relations = ['payment_order_items']
+    const relations = ['payment_order_items','guest_user']
     const scopes = []
     super(Payment, relations, scopes)
     this.model = Payment
+  }
+
+  async index(
+    orderByColumn = constants.ORDER_BY_COLUMN,
+    orderByValue = constants.ORDER_BY_VALUE,
+    page = 1,
+    perPage = constants.PER_PAGE,
+    pagination=true
+  ) {
+    const ctx: any = HttpContext.get()
+    const user = ctx.auth.use('api').user
+    const relations = ctx.request.input('relations',[])
+    let query = this.model.query()
+    query.where('vendor_id', user.id)
+    for (let relation of [...this.relations, ...relations]) query.preload(relation)
+    for (let scope of this.scopes) query.withScopes((scopeBuilder) => scopeBuilder[scope].call())
+    if (pagination){
+      return await query.orderBy(orderByColumn, orderByValue).paginate(page, perPage)
+    }else{
+      return await query.orderBy(orderByColumn, orderByValue)
+    }
   }
 
   async getPaymentByUser(id) {
@@ -27,7 +49,7 @@ class PaymentRepo extends BaseRepo {
     let query = this.model.query()
     for (let relation of [...this.relations, ...relations]) query.preload(relation)
     for (let scope of this.scopes) query.withScopes((scopeBuilder) => scopeBuilder[scope].call())
-    const res = await query.select('id','amount','status').where({id}).firstOrFail()
+    const res = await query.select('id','amount','status','guest_user_id').where({id}).firstOrFail()
     return res
   }
 
@@ -96,7 +118,7 @@ class PaymentRepo extends BaseRepo {
       }
 
       let row = await this.model.create({
-        vendor_id: vendor.id,
+        vendor_id: vendor.userId,
         guest_user_id: guestUserId,
         payment_method_id: paymentIntent.payment_method,
         payment_intent_id: paymentIntent.id,

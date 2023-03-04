@@ -1,6 +1,7 @@
-import {column, HasMany, hasMany} from '@ioc:Adonis/Lucid/Orm'
+import {BelongsTo, belongsTo, column, HasMany, hasMany} from '@ioc:Adonis/Lucid/Orm'
 import CommonModel from 'App/Models/CommonModel'
 import PaymentOrderItem from 'App/Models/PaymentOrderItem'
+import GuestUser from 'App/Models/GuestUser'
 
 export default class Payment extends CommonModel {
   @column({isPrimary:true})
@@ -25,11 +26,8 @@ export default class Payment extends CommonModel {
   @hasMany(() => PaymentOrderItem)
   public payment_order_items: HasMany<typeof PaymentOrderItem>
 
-  // @belongsTo(() => GuestUser, {
-  //   localKey: 'id',
-  //   foreignKey: 'guestUserId'
-  // })
-  // public guest_user: BelongsTo<typeof GuestUser>
+  @belongsTo(() => GuestUser)
+  public guest_user: BelongsTo<typeof GuestUser>
 
 
 

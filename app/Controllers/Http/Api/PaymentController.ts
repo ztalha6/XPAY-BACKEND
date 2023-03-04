@@ -17,13 +17,6 @@ export default class PaymentController extends ApiBaseController {
     return this.apiResponse('Record fetched successfully!', res)
   }
 
-  async store(ctx: HttpContextContract, instanceType?: number) {
-    await super.validateBody(ctx,InitiatePaymentValidator)
-    let input = ctx.request.only(this.repo.fillables())
-    let row = await PaymentRepo.store(input, ctx.request, instanceType || Attachment.TYPE[this.repo.model.name.toUpperCase()])
-    return this.apiResponse('Record Added Successfully', row)
-  }
-
   async initiatePayment(ctx: HttpContextContract, instanceType?: number) {
     await super.validateBody(ctx,InitiatePaymentValidator)
     let input = ctx.request.only(this.repo.fillables())
@@ -38,9 +31,5 @@ export default class PaymentController extends ApiBaseController {
     return this.apiResponse('Payment Successful', row)
   }
 
-  async update(ctx: HttpContextContract, instanceType?: number): Promise<{ data: any; message: string; status: boolean }> {
-    await super.validateBody(ctx,InitiatePaymentValidator)
-    return super.update(ctx, instanceType)
-  }
 
 }

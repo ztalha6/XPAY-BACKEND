@@ -9,11 +9,6 @@ export default class UserValidator extends BaseValidator {
     super()
   }
 
-  public refs = schema.refs({
-    establishmentId: this.ctx.auth.use('api').user?.establishmentId || this.ctx.request.input('establishment_id',null),
-    updateId : this.ctx.params?.id
-
-  })
 
   public schema = schema.create({
     phone: schema.string( [
@@ -23,9 +18,6 @@ export default class UserValidator extends BaseValidator {
       rules.trim(),
       rules.unique({table: 'users', column: 'phone',
         where: {'is_verified': 1},
-        whereNot:{
-          id: this.refs.updateId
-        }
       }),
     ]),
     password: schema.string.optional( [
@@ -34,7 +26,7 @@ export default class UserValidator extends BaseValidator {
     ]),
     full_name: schema.string([rules.trim()]),
     image: schema.string.optional([rules.trim()]),
-    device_type: schema.enum([User.DEVICE_TYPES.MOBILE, User.DEVICE_TYPES.WEB,User.DEVICE_TYPES.POS] as const),
+    device_type: schema.enum([User.DEVICE_TYPES.MOBILE, User.DEVICE_TYPES.WEB] as const),
     device_token: schema.string([rules.trim()]),
     establishment_id: schema.number.optional([
       rules.exists({
@@ -50,11 +42,10 @@ export default class UserValidator extends BaseValidator {
         table: 'roles',
         column: 'id',
         where: {
-          establishment_id : this.refs.establishmentId.value,
           deleted_at: null
         },
         whereNot: {
-          id: [Role.TYPES.RESTAURANT_ADMIN,Role.TYPES.ADMIN,Role.TYPES.USER]
+          id: [Role.TYPES.ADMIN,Role.TYPES.USER]
         }
       })
     ])
