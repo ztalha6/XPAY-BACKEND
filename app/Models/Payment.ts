@@ -2,6 +2,7 @@ import {BelongsTo, belongsTo, column, HasMany, hasMany} from '@ioc:Adonis/Lucid/
 import CommonModel from 'App/Models/CommonModel'
 import PaymentOrderItem from 'App/Models/PaymentOrderItem'
 import GuestUser from 'App/Models/GuestUser'
+import UserBusinessDetail from 'App/Models/UserBusinessDetail'
 
 export default class Payment extends CommonModel {
   @column({isPrimary:true})
@@ -28,6 +29,12 @@ export default class Payment extends CommonModel {
 
   @belongsTo(() => GuestUser)
   public guest_user: BelongsTo<typeof GuestUser>
+
+  @belongsTo(() => UserBusinessDetail,{
+    localKey: 'userId',
+    foreignKey: 'vendorId',
+  })
+  public vendor_business_detail: BelongsTo<typeof UserBusinessDetail>
 
 
 

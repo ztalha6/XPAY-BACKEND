@@ -15,7 +15,7 @@ class PaymentRepo extends BaseRepo {
   model
 
   constructor() {
-    const relations = ['payment_order_items','guest_user']
+    const relations = ['payment_order_items','guest_user','vendor_business_detail']
     const scopes = []
     super(Payment, relations, scopes)
     this.model = Payment
@@ -49,7 +49,7 @@ class PaymentRepo extends BaseRepo {
     let query = this.model.query()
     for (let relation of [...this.relations, ...relations]) query.preload(relation)
     for (let scope of this.scopes) query.withScopes((scopeBuilder) => scopeBuilder[scope].call())
-    const res = await query.select('id','amount','status','guest_user_id').where({id}).firstOrFail()
+    const res = await query.select('id','amount','status','guest_user_id','vendor_id').where({id}).firstOrFail()
     return res
   }
 
