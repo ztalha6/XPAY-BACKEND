@@ -1,4 +1,4 @@
-import {BelongsTo, belongsTo, column, HasMany, hasMany} from '@ioc:Adonis/Lucid/Orm'
+import {BelongsTo, belongsTo, column, computed, HasMany, hasMany} from '@ioc:Adonis/Lucid/Orm'
 import CommonModel from 'App/Models/CommonModel'
 import Attachment from 'App/Models/Attachment'
 import Payment from 'App/Models/Payment'
@@ -19,6 +19,19 @@ export default class Dispute extends CommonModel {
   public disputeStatus: number
   @column()
   public paymentId: number
+
+
+  @computed()
+  public get dispute_status_text() {
+    switch (this.disputeStatus) {
+      case Dispute.DISPUTE_STATUS.OPENED:
+        return 'Opened'
+      case Dispute.DISPUTE_STATUS.APPROVED:
+        return 'Approved'
+      case Dispute.DISPUTE_STATUS.REJECTED:
+        return 'Rejected'
+    }
+  }
 
 
   /*

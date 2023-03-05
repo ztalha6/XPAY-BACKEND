@@ -27,10 +27,17 @@ class DisputeRepo extends BaseRepo {
     const ctx: any = HttpContext.get()
     const user = ctx.auth.use('api').user
     const relations = ctx.request.input('relations',[])
+    const disputeStatus = ctx.request.input('dispute_status',null)
     let query = this.model.query()
     query.whereHas('payment',(paymentQB) => {
       paymentQB.where('vendor_id',user.id)
     })
+
+    /*Filter by DISPUTE STATUS*/
+    if (disputeStatus) {
+      query.whereIn('dispute_status', disputeStatus)
+    }
+
     for (let relation of [...this.relations, ...relations]) query.preload(relation)
     for (let scope of this.scopes) query.withScopes((scopeBuilder) => scopeBuilder[scope].call())
     if (pagination){
