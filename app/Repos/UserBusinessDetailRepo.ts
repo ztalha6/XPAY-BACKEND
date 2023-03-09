@@ -8,9 +8,9 @@ class UserBusinessDetailRepo extends BaseRepo {
     model
 
     constructor() {
-        const relations = []
+      const relations = ['user_business_image']
         const scopes = []
-        super(UserBusinessDetail, relations, scopes)
+      super(UserBusinessDetail, relations, scopes)
         this.model = UserBusinessDetail
     }
 

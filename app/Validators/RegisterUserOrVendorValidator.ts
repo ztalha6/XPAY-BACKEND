@@ -47,6 +47,9 @@ export default class RegisterUserOrVendorValidator extends BaseValidator {
     website_url: schema.string.optional([
       rules.requiredWhen('role_id', '=', Role.TYPES.VENDOR)
     ]),
+    user_business_image: schema.string.optional([
+      rules.maxLength(65535)
+    ]),
   })
 
   constructor(protected ctx: HttpContextContract) {

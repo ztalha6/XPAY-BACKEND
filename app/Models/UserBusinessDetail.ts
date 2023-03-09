@@ -1,5 +1,6 @@
-import {column} from '@ioc:Adonis/Lucid/Orm'
+import {column, HasOne, hasOne} from '@ioc:Adonis/Lucid/Orm'
 import CommonModel from 'App/Models/CommonModel'
+import Attachment from 'App/Models/Attachment'
 
 export default class UserBusinessDetail extends CommonModel {
   @column({isPrimary:true})
@@ -25,7 +26,11 @@ export default class UserBusinessDetail extends CommonModel {
   /*
   * ######################### RELATIONS ##########################
   * */
-
+  @hasOne(() => Attachment, {
+    foreignKey: 'instanceId',
+    onQuery: (query) => query.where({instanceType: Attachment.TYPE.USER_BUSINESS_DETAIL}).orderBy('id', 'desc'),
+  })
+  public user_business_image: HasOne<typeof Attachment>
 
 
 

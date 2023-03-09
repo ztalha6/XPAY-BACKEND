@@ -8,7 +8,8 @@ export default class Attachment extends CommonModel {
     POST: 10,
     USER: 20,
     PROFILE_PICTURE: 21,
-    DISPUTE: 30
+    DISPUTE: 30,
+    USER_BUSINESS_DETAIL: 40
   }
 
   static MIME_TYPE = {

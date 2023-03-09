@@ -21,6 +21,7 @@ import EditUserValidator from 'App/Validators/EditUserValidator'
 import Attachment from 'App/Models/Attachment'
 import RegisterUserOrVendorValidator from 'App/Validators/RegisterUserOrVendorValidator'
 import * as crypto from 'crypto'
+import UserBusinessDetail from 'App/Models/UserBusinessDetail'
 
 export default class UserController extends ApiBaseController {
 
@@ -134,15 +135,28 @@ export default class UserController extends ApiBaseController {
 
     if(roleId == Role.TYPES.VENDOR){
       const apiKey = crypto.randomBytes(16).toString('hex');
+      const user_business_image = ctx.request?.input('user_business_image', null)
+
       const userBusinessDetail = {
-        business_name: ctx.request.input('business_name'),
-        business_address: ctx.request.input('business_address'),
-        bank_account_number: ctx.request.input('bank_account_number'),
-        bank_routing_number: ctx.request.input('bank_routing_number'),
-        tax_id_number: ctx.request.input('tax_id_number'),
-        api_key: apiKey
+        userId : user.id,
+        businessName: ctx.request.input('business_name'),
+        businessAddress: ctx.request.input('business_address'),
+        bankAccountNumber: ctx.request.input('bank_account_number'),
+        bankRoutingNumber: ctx.request.input('bank_routing_number'),
+        taxIdNumber: ctx.request.input('tax_id_number'),
+        apiKey: apiKey
       }
-      await user.related('userBusinessDetail').create(userBusinessDetail)
+      const userBusinessDetailRes = await UserBusinessDetail.create(userBusinessDetail)
+
+      if (user_business_image) {
+        const userBusinessImage: any = {
+          path: user_business_image,
+          instanceType: Attachment.TYPE.USER_BUSINESS_DETAIL,
+          mimeType: Attachment.MIME_TYPE.IMAGE,
+        }
+
+        await userBusinessDetailRes.related('user_business_image').create(userBusinessImage)
+      }
     }
 
     /*Send Welcome Email*/
