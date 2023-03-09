@@ -11,7 +11,7 @@ class DisputeRepo extends BaseRepo {
   model
 
   constructor() {
-    const relations = ['dispute_media']
+    const relations = ['dispute_media','payment']
     const scopes = []
     super(Dispute, relations, scopes)
     this.model = Dispute
