@@ -15,7 +15,7 @@ class PaymentRepo extends BaseRepo {
   model
 
   constructor() {
-    const relations = ['payment_order_items','guest_user','vendor_business_detail']
+    const relations = ['payment_order_items','guest_user','vendor_business_detail','dispute']
     const scopes = []
     super(Payment, relations, scopes)
     this.model = Payment
