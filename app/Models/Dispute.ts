@@ -46,7 +46,7 @@ export default class Dispute extends CommonModel {
   public dispute_media: HasMany<typeof Attachment>
 
   @belongsTo(() => Payment, {
-    onQuery: (query) => query.preload('vendor_business_detail').preload('guest_user')
+    onQuery: (query) => query.preload('vendor_business_detail').preload('guest_user').preload('payment_order_items')
   })
   public payment: BelongsTo<typeof Payment>
 

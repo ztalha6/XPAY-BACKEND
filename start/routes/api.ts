@@ -46,6 +46,7 @@ Route.group(() => {
 
   /*API- Open Dispute*/
   Route.post('open-dispute','Api/DisputeController.store')
+  Route.get('get-single-dispute/:id','Api/DisputeController.show')
 
 
   /****************************
